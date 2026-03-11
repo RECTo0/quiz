@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Small Game</title>
+
+<style>
+
+body{
+margin:0;
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+font-family:system-ui;
+background: radial-gradient(circle at top,#0f172a,#020617);
+color:white;
+overflow:hidden;
+}
+
+.card{
+width:90%;
+max-width:520px;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(10px);
+padding:30px;
+border-radius:18px;
+text-align:center;
+box-shadow:0 20px 60px rgba(0,0,0,0.6);
+}
+
+h2{
+margin-bottom:20px;
+}
+
+.options{
+display:flex;
+gap:20px;
+justify-content:center;
+}
+
+.option{
+cursor:pointer;
+border-radius:12px;
+overflow:hidden;
+transition:0.3s;
+}
+
+.option:hover{
+transform:scale(1.08);
+}
+
+img{
+width:150px;
+height:150px;
+object-fit:cover;
+}
+
+.message{
+margin-top:20px;
+font-size:18px;
+min-height:40px;
+}
+
+button{
+margin-top:20px;
+padding:10px 16px;
+border:none;
+border-radius:20px;
+background:white;
+color:black;
+font-weight:600;
+cursor:pointer;
+}
+
+/* moon */
+
+.moon{
+font-size:80px;
+opacity:0;
+margin-top:20px;
+transition:2s;
+}
+
+.show{
+opacity:1;
+}
+
+/* stars */
+
+.star{
+position:absolute;
+width:3px;
+height:3px;
+background:white;
+border-radius:50%;
+animation:fall linear infinite;
+}
+
+@keyframes fall{
+
+from{
+transform:translateY(-10px);
+opacity:1;
+}
+
+to{
+transform:translateY(100vh);
+opacity:0;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h2 id="question"></h2>
+
+<div class="options" id="options"></div>
+
+<div class="message" id="message"></div>
+
+<div class="moon" id="moon">🌙</div>
+
+<button id="next" style="display:none;">Next</button>
+
+</div>
+
+<script>
+
+let step=0
+
+const questions=[
+
+{
+q:"Which place feels more peaceful?",
+imgs:[
+"https://images.unsplash.com/photo-1501785888041-af3ef285b470",
+"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
+]
+},
+
+{
+q:"Which night view would you rather look at?",
+imgs:[
+"https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3",
+"https://images.unsplash.com/photo-1506744038136-46273834b3fb"
+]
+},
+
+{
+q:"Which moon is the most beautiful?",
+imgs:[
+"https://www1.grc.nasa.gov/wp-content/uploads/moon-e1751905728667-600x386.gif",
+"https://www.astronomy.com/wp-content/uploads/2023/09/underfullmoon.jpeg"
+]
+}
+
+]
+
+function typeText(text,element,speed=40){
+
+element.innerHTML=""
+
+let i=0
+
+let interval=setInterval(()=>{
+
+element.innerHTML+=text.charAt(i)
+
+i++
+
+if(i>=text.length) clearInterval(interval)
+
+},speed)
+
+}
+
+function render(){
+
+document.getElementById("message").innerHTML=""
+document.getElementById("next").style.display="none"
+
+let q=questions[step]
+
+typeText(q.q,document.getElementById("question"))
+
+let html=""
+
+q.imgs.forEach(()=>{
+
+html+=`
+<div class="option" onclick="choose()">
+<img src="${arguments[0]}">
+</div>
+`
+
+})
+
+document.getElementById("options").innerHTML=""
+
+questions[step].imgs.forEach(img=>{
+
+let div=document.createElement("div")
+div.className="option"
+div.onclick=choose
+
+let im=document.createElement("img")
+im.src=img
+
+div.appendChild(im)
+
+document.getElementById("options").appendChild(div)
+
+})
+
+}
+
+function choose(){
+
+if(step<2){
+
+typeText("Interesting choice 😌",document.getElementById("message"))
+
+document.getElementById("next").style.display="inline-block"
+
+}
+
+else{
+
+finalSequence()
+
+}
+
+}
+
+document.getElementById("next").onclick=()=>{
+
+step++
+
+render()
+
+}
+
+function finalSequence(){
+
+document.getElementById("options").innerHTML=""
+
+let m=document.getElementById("message")
+
+typeText("Wrong answer.",m)
+
+setTimeout(()=>{
+
+typeText("3rfti 3lach?",m)
+
+},2000)
+
+setTimeout(()=>{
+
+typeText("7it a7sn wajml 9amar kayn...",m)
+
+},3500)
+
+setTimeout(()=>{
+
+typeText("Houwa likay9ra had lmessage arfelak temtatgh a tassanou dyali ❤️❤️❤️.",m)
+
+document.getElementById("moon").classList.add("show")
+
+createStars()
+
+},7500)
+
+}
+
+function createStars(){
+
+for(let i=0;i<70;i++){
+
+let star=document.createElement("div")
+
+star.className="star"
+
+star.style.left=Math.random()*100+"vw"
+
+star.style.animationDuration=(2+Math.random()*3)+"s"
+
+document.body.appendChild(star)
+
+}
+
+}
+
+render()
+
+</script>
+
+</body>
+</html>
